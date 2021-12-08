@@ -21,9 +21,7 @@ gccの使い方は
 なお、ここでいうところのパラメータとは
 
 $$
-
-  \frac{1}{\xi^{2}}\frac{\mathrm{d}}{\mathrm{d}\xi}\left( \xi^{2}\frac{\mathrm{d}\theta}{\mathrm{d}\xi} \right) = -\theta^{N}
-
+\frac{1}{\xi^{2}} \frac{\mathrm{d}}{\mathrm{d}\xi} \left(  \xi^{2} \frac{\mathrm{d}\theta}{\mathrm{d}\xi}  \right) = -\theta^{N}
 $$
 
-の$N$である。
+の $ N $ である。
