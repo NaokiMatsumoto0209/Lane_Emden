@@ -9,7 +9,7 @@
 
 /*----lane_emdenの定義----*/
 double dvdr(double d, double v, double r, double g){ //二階微分の式
-  return -pow(d, g) - 2.0*v/r;
+  return -pow(d, g)-2.0*v/r;
 }
 
 double dddr(double d, double v, double r, double g){ //一回微分の式 = vとしている
@@ -26,14 +26,14 @@ int main(int argc, char *argv[]) { //実行時の引数として、「出力フ�
   FILE *fp;
   /*----ファイルポインタ----*/
 
-  int n = 1e8; //forループの打ち切り回数
-  double rmax = 10.0; //計算の打ち切りの半径の値
+  const int n = 1e8; //forループの打ち切り回数
+  const double rmax = 7.0; //計算の打ち切りの半径の値
   double dr = rmax/(double)n; //計算の刻み幅
 
   /*----初期条件の設定----*/
   double r = dr; //初期で半径0.0 -> 刻み幅dr
   double d = 1.0 - dr*dr/6.0 + g*dr*dr*dr*dr/120.0; //初期で密度比1.0 -> 近似の\xiのあたい
-  double v = -dr/3.0 + g*dr*dr*dr/30.0; //初期で密度比変化0.0 -> 近似のd\xi/d
+  double v = - dr/3.0 + g*dr*dr*dr/30.0; //初期で密度比変化0.0 -> 近似のd\xi/d
   /*----初期条件の設定----*/
 
   //double m = 0.0; //全質量の計算
@@ -53,6 +53,8 @@ int main(int argc, char *argv[]) { //実行時の引数として、「出力フ�
 
   fprintf(fp, "#i\tr\tv\td\n" );
 
+  double r1 = 0.0; //記録用の変数
+
   for ( int i = 1; i < n; ++i ){
     double kr = r + 0.5 * dr;
 
@@ -65,22 +67,24 @@ int main(int argc, char *argv[]) { //実行時の引数として、「出力フ�
     double kd3 = dddr(d + 0.5*dr*kd2, v + 0.5*dr*kv2, kr, g);
     double kv3 = dvdr(d + 0.5*dr*kd2, v + 0.5*dr*kv2, kr, g);
 
-    double kd4 = dddr(d + dr*kd3, v + dr*kv3, r + kr, g);
-    double kv4 = dvdr(d + dr*kd3, v + dr*kv3, r + kr, g);
+    double kd4 = dddr(d + dr*kd3, v + dr*kv3, r + dr, g);
+    double kv4 = dvdr(d + dr*kd3, v + dr*kv3, r + dr, g);
 
     d += dr*(kd1 + 2.0*kd2 + 2.0*kd3 + kd4)/6.0;
     v += dr*(kv1 + 2.0*kv2 + 2.0*kv3 + kv4)/6.0;
     r += dr;
 
     if ( d < 0.0 ){
-      printf("半径は %lf、打ち切り回数は %d\n", r, i);
+      printf("半径は %.8g、打ち切り回数は %d\n", r1, i);
       fclose(fp);
       return 0; //密度が負というのは非物理的なので、計算を止める
     }
     //printf("%d\t %lf\t %lf\t %lf\n", i, r, v, d );
-    fprintf(fp, "%d\t %lf\t %lf\t %lf\n", i, r, v, d );
+    r1 = r;
+    fprintf(fp, "%d\t %.8g\t %.8g\t %.8g\n", i, r1, v, d );
   }
-  printf("半径は %lf、打ち切り回数は %d\n", r, n);
+
+  printf("半径は %.8g、打ち切り回数は %d\n", r1, n);
   fclose(fp);
   return 0;
 }
