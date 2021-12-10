@@ -26,8 +26,8 @@ int main(int argc, char *argv[]) { //実行時の引数として、「出力フ�
   FILE *fp;
   /*----ファイルポインタ----*/
 
-  const int n = 1e8; //forループの打ち切り回数
-  const double rmax = 7.0; //計算の打ち切りの半径の値
+  const int n = 1e9; //forループの打ち切り回数
+  const double rmax = 20.0; //計算の打ち切りの半径の値
   double dr = rmax/(double)n; //計算の刻み幅
 
   /*----初期条件の設定----*/
@@ -75,16 +75,18 @@ int main(int argc, char *argv[]) { //実行時の引数として、「出力フ�
     r += dr;
 
     if ( d < 0.0 ){
-      printf("半径は %.8g、打ち切り回数は %d\n", r1, i);
+      printf("半径は %.16g、打ち切り回数は %d\n", r1, i);
       fclose(fp);
       return 0; //密度が負というのは非物理的なので、計算を止める
     }
     //printf("%d\t %lf\t %lf\t %lf\n", i, r, v, d );
     r1 = r;
-    fprintf(fp, "%d\t %.8g\t %.8g\t %.8g\n", i, r1, v, d );
+    if (i % 100 == 0){
+      fprintf(fp, "%d\t %.8g\t %.8g\t %.8g\n", i, r1, v, d );
+    }
   }
 
-  printf("半径は %.8g、打ち切り回数は %d\n", r1, n);
+  printf("半径は %.16g、打ち切り回数は %d\n", r1, n);
   fclose(fp);
   return 0;
 }
